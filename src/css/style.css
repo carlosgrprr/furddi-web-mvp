@@ -1,0 +1,92 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f9f5f1;
+    color: #2c1a1d;
+  }
+  
+  header {
+    background: #ffffff;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .logo {
+    height: 120px;
+    width: 120px;
+    border-radius: 50%;
+    background: #5f0243;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }
+  
+  nav a {
+    text-decoration: none;
+    color: #5f0243;
+    font-weight: bold;
+  }
+  
+  .hero {
+    background: #0198a5;
+    color: #ffffff;
+    text-align: center;
+    padding: 35px 20px;
+
+  }
+  
+  .btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #f5a623;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+  }
+  
+  section {
+    padding: 60px 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  footer {
+    text-align: center;
+    padding: 20px;
+    background: #5f0243;
+    color: #fff;
+  } 
+
+  @media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  nav ul {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .hero {
+    padding: 20px;
+  }
+
+  section {
+    padding: 30px 10px;
+  }
+
+  .servicios-grid {
+    grid-template-columns: 1fr;
+  }
+}
