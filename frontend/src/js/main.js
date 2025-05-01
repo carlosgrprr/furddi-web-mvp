@@ -129,6 +129,47 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Fetch and display reviews for a product
+    async function fetchProductReviews(productId) {
+        try {
+            const response = await fetch(`/api/marketplace/${productId}/reviews`);
+            const reviews = await response.json();
+            const reviewsContainer = document.getElementById('reviews-container');
+            reviewsContainer.innerHTML = ''; // Clear existing reviews
+            reviews.forEach(review => {
+                const reviewElement = document.createElement('div');
+                reviewElement.classList.add('review');
+                reviewElement.innerHTML = `
+                    <p><strong>${review.user.name}:</strong> ${review.comment}</p>
+                    <p>Rating: ${review.rating}/5</p>
+                `;
+                reviewsContainer.appendChild(reviewElement);
+            });
+        } catch (error) {
+            console.error('Error fetching product reviews:', error);
+        }
+    }
+
+    // Submit a new review for a product
+    async function submitProductReview(productId, userId, rating, comment) {
+        try {
+            const response = await fetch(`/api/marketplace/${productId}/reviews`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, rating, comment })
+            });
+            if (response.ok) {
+                alert('Review submitted successfully');
+                fetchProductReviews(productId); // Refresh reviews
+            } else {
+                const error = await response.text();
+                alert(`Failed to submit review: ${error}`);
+            }
+        } catch (error) {
+            console.error('Error submitting review:', error);
+        }
+    }
+
     // Handle user registration
     async function registerUser(email, password) {
         try {
@@ -187,6 +228,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const email = loginForm.querySelector('input[type="email"]').value;
             const password = loginForm.querySelector('input[type="password"]').value;
             loginUser(email, password);
+        });
+    }
+
+    const reviewForm = document.getElementById('review-form');
+    if (reviewForm) {
+        reviewForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const productId = reviewForm.dataset.productId;
+            const userId = localStorage.getItem('userId'); // Assume user ID is stored in localStorage
+            const rating = reviewForm.querySelector('input[name="rating"]').value;
+            const comment = reviewForm.querySelector('textarea[name="comment"]').value;
+            submitProductReview(productId, userId, rating, comment);
         });
     }
 
