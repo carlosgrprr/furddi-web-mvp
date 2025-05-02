@@ -205,6 +205,53 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Gamification Modal Logic
+    const gamifyBtn = document.getElementById('gamify-btn');
+    const gamifyPopup = document.getElementById('gamify-popup');
+    const closePopup = document.getElementById('close-popup');
+
+    gamifyBtn?.addEventListener('click', () => {
+        gamifyPopup.classList.remove('hidden');
+    });
+
+    closePopup?.addEventListener('click', () => {
+        gamifyPopup.classList.add('hidden');
+    });
+
+    // Scroll Animations
+    const fadeInElements = document.querySelectorAll('.fade-in');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    });
+
+    fadeInElements.forEach((el) => observer.observe(el));
+
+    // Offline Detection
+    function updateOnlineStatus() {
+        const offlineBanner = document.getElementById('offline-banner');
+        if (!navigator.onLine) {
+            offlineBanner.classList.remove('hidden');
+        } else {
+            offlineBanner.classList.add('hidden');
+        }
+    }
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+
+    const offlineBanner = document.createElement('div');
+    offlineBanner.id = 'offline-banner';
+    offlineBanner.textContent = 'Estás desconectado. Algunas funciones pueden no estar disponibles.';
+    offlineBanner.style.cssText = 'position: fixed; top: 0; width: 100%; background: #d9534f; color: white; text-align: center; padding: 10px; z-index: 1000;';
+    offlineBanner.classList.add('hidden');
+    document.body.appendChild(offlineBanner);
+    updateOnlineStatus();
+
     // Initialize data fetching
     fetchBlogArticles();
     fetchMarketplaceProducts();

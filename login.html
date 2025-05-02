@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | FRUDDI</title>
+  <link rel="stylesheet" href="/frontend/src/css/style.css">
+</head>
+<body>
+  <section class="form-container">
+    <h1>Iniciar Sesión</h1>
+    <form id="login-form">
+      <label for="email">Correo Electrónico</label>
+      <input type="email" id="email" placeholder="Ingresa tu correo" required>
+
+      <label for="password">Contraseña</label>
+      <div class="password-wrapper">
+        <input type="password" id="password" placeholder="Ingresa tu contraseña" required>
+        <button type="button" id="toggle-password" class="toggle-password">👁️</button>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+    </form>
+    <p>¿No tienes cuenta? <a href="/register.html">Regístrate aquí</a></p>
+  </section>
+  <script src="/frontend/src/js/main.js"></script>
+</body>
+</html>
