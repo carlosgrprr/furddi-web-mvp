@@ -25,28 +25,75 @@
     </header>
 
     <section id="inicio" class="hero">
-      <h1>Digitalizamos el alma rural.</h1>
+      <h1>Conectando lo Rural con el Futuro</h1>
       <p>
-        Herramientas digitales para el turismo, la gastronomía y la agronomía
-        rural.
+        En FRUDDI, creemos en el poder de la tecnología para preservar y potenciar
+        las tradiciones rurales. Únete a nosotros para explorar experiencias únicas,
+        apoyar a comunidades locales y descubrir un mundo de posibilidades.
       </p>
       <a href="#experiencias" class="btn btn-primary">Explorar Experiencias</a>
     </section>
 
     <section id="gamification">
       <h2>Explora y Aprende</h2>
-      <button id="gamify-btn" class="btn btn-secondary">Descubre Zonas Especiales</button>
+      <button id="gamify-btn" class="btn btn-secondary">
+        <i class="fas fa-map-marker-alt"></i> Descubre Zonas Especiales
+      </button>
       <div id="gamify-popup" class="modal hidden">
-        <p>¡Bienvenido a una zona especial! Aquí aprenderás datos curiosos sobre el mundo rural.</p>
+        <img src="/frontend/public/logoFRUDDi2.png" alt="Mascota" class="mascot" />
+        <p>¡Bienvenido a una zona especial! Soy tu guía digital, aquí aprenderás datos curiosos sobre el mundo rural.</p>
         <button id="close-popup" class="btn btn-close">Cerrar</button>
       </div>
     </section>
 
-    <h2>Acerca de FRUDDI</h2>
-    <p>
-      Nacimos de la pasión por el campo, el sabor auténtico y la innovación.
-      FRUDDI da forma y alas al mundo rural en el siglo XXI.
-    </p>
+    <section id="about">
+      <h2>Acerca de FRUDDI</h2>
+      <p>
+        FRUDDI nació de la pasión por el campo, el sabor auténtico y la innovación.
+        Nuestra misión es digitalizar el alma rural, conectando a las comunidades
+        con herramientas modernas que respetan sus raíces.
+      </p>
+    </section>
+
+    <section id="services">
+      <h2>Nuestros Servicios</h2>
+      <div class="card">
+        <h3>Digitalización de Experiencias</h3>
+        <p>Transformamos actividades rurales en experiencias digitales inolvidables.</p>
+      </div>
+      <div class="card">
+        <h3>Marketplace Colaborativo</h3>
+        <p>Un espacio para que productores locales ofrezcan sus productos al mundo.</p>
+      </div>
+      <div class="card">
+        <h3>Gestión Inteligente de Residuos</h3>
+        <p>Soluciones sostenibles para un futuro más limpio y verde.</p>
+      </div>
+      <div class="card">
+        <h3>Rutas y Eventos Personalizados</h3>
+        <p>Diseñamos experiencias únicas adaptadas a tus intereses.</p>
+      </div>
+    </section>
+
+    <section id="product-tracker">
+      <h2>Rastreador de Productos</h2>
+      <p>
+        Descubre el viaje de los productos desde su origen hasta tus manos. Apoya a
+        los artesanos locales y valida la autenticidad de cada artículo.
+      </p>
+      <div class="tracker-card">
+        <h3>Miel Artesanal</h3>
+        <img src="/frontend/public/honey.jpg" alt="Miel Artesanal" class="product-image" />
+        <p>Certificado de Origen: <strong>Apicultores Unidos</strong></p>
+        <button class="btn btn-primary" onclick="viewProductDetails('honey')">Ver Detalles</button>
+      </div>
+      <div class="tracker-card">
+        <h3>Queso Artesanal</h3>
+        <img src="/frontend/public/cheese.jpg" alt="Queso Artesanal" class="product-image" />
+        <p>Certificado de Origen: <strong>Queseros del Valle</strong></p>
+        <button class="btn btn-primary" onclick="viewProductDetails('cheese')">Ver Detalles</button>
+      </div>
+    </section>
 
     <h2>Explorar Experiencias</h2>
     <p>Escapadas rurales, rutas gastronómicas, talleres artesanales.</p>

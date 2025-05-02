@@ -309,3 +309,39 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchBlogArticles();
     fetchMarketplaceProducts();
 });
+
+// Product Tracker Details Logic
+function viewProductDetails(product) {
+  const details = {
+    honey: {
+      title: 'Miel Artesanal',
+      description: 'Recolectada de colmenas sostenibles en el corazón del campo.',
+      images: ['/frontend/public/honey1.jpg', '/frontend/public/honey2.jpg'],
+    },
+    cheese: {
+      title: 'Queso Artesanal',
+      description: 'Elaborado con leche fresca de granjas locales.',
+      images: ['/frontend/public/cheese1.jpg', '/frontend/public/cheese2.jpg'],
+    },
+  };
+
+  const productDetails = details[product];
+  if (productDetails) {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+      <h2>${productDetails.title}</h2>
+      <p>${productDetails.description}</p>
+      <div class="image-gallery">
+        ${productDetails.images.map(img => `<img src="${img}" alt="${productDetails.title}" />`).join('')}
+      </div>
+      <button class="btn btn-close" onclick="closeModal(this)">Cerrar</button>
+    `;
+    document.body.appendChild(modal);
+  }
+}
+
+function closeModal(button) {
+  const modal = button.parentElement;
+  modal.remove();
+}
