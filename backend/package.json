@@ -18,11 +18,7 @@
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-<<<<<<< HEAD
-    "mongoose": "^8.14.1"
-=======
     "mongoose": "^8.14.1",
     "winston": "^3.17.0"
->>>>>>> 48b70d8 (Commit inicial de prueba)
   }
 }

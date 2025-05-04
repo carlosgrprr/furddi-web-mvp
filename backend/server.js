@@ -6,11 +6,12 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const userRoutes = require('./routes/userRoutes');
 const blogRoutes = require('./routes/blogRoutes');
 const marketplaceRoutes = require('./routes/marketplaceRoutes');
-require('dotenv').config(); // Load environment variables
+require('dotenv').config({ path: './.env' }); // Explicitly specify the path to the .env file
 
 const PORT = 3000;
 const isTestMode = process.env.NODE_ENV === 'test'; // Check if the application is running in test mode
 console.log('Test mode:', isTestMode); // Debug log to verify test mode
+console.log('MONGO_URI:', process.env.MONGO_URI); // Debug log to verify MONGO_URI
 
 function createServer() {
   const app = express();
@@ -22,6 +23,10 @@ function createServer() {
   })
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB connection error:', err));
+
+  mongoose.connection.on('error', (err) => {
+    console.error('MongoDB runtime error:', err);
+  });
 
   // Replace hardcoded JWT secret (if used elsewhere in the code)
   const jwtSecret = process.env.JWT_SECRET;
