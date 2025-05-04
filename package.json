@@ -1,12 +1,30 @@
 {
   "devDependencies": {
+<<<<<<< HEAD
     "nodemon": "^3.1.10"
   },
   "dependencies": {
+=======
+    "nodemon": "^3.1.10",
+    "webpack": "^5.99.7",
+    "webpack-cli": "^6.0.1"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+>>>>>>> 48b70d8 (Commit inicial de prueba)
     "jest": "^29.7.0",
     "nodemailer": "^6.10.1",
     "supertest": "^7.1.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
+<<<<<<< HEAD
+=======
+  },
+  "scripts": {
+    "start": "node backend/server.js",
+    "test": "jest",
+    "build": "webpack --config webpack.config.js",
+    "dev": "webpack --config webpack.config.js --watch"
+>>>>>>> 48b70d8 (Commit inicial de prueba)
   }
 }
