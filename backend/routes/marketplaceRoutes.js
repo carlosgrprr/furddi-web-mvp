@@ -19,11 +19,11 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Add a new product with price, category, and stock
+// Add a new product with price, category, stock, and origin
 router.post('/', async (req, res) => {
   try {
-    const { name, description, price, category, stock } = req.body;
-    const product = new Product({ name, description, price, category, stock });
+    const { name, description, price, category, stock, origin } = req.body; // Added 'origin' field
+    const product = new Product({ name, description, price, category, stock, origin }); // Include 'origin' in product creation
     await product.save();
     res.status(201).json({ message: 'Product added successfully' });
   } catch (error) {

@@ -6,7 +6,20 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const userRoutes = require('./routes/userRoutes');
 const blogRoutes = require('./routes/blogRoutes');
 const marketplaceRoutes = require('./routes/marketplaceRoutes');
-require('dotenv').config({ path: './.env' }); // Explicitly specify the path to the .env file
+const productTrackerRoutes = require('./routes/productTrackerRoutes'); // Import product tracker routes
+require('dotenv').config({ path: path.join(__dirname, '.env') }); // Explicitly specify the path to the .env file
+
+console.log('Environment variables loaded:', process.env);
+
+if (!process.env.MONGO_URI) {
+  console.error('Error: MONGO_URI is not defined in the environment variables.');
+  process.exit(1);
+}
+
+if (!process.env.JWT_SECRET) {
+  console.error('Error: JWT_SECRET is not defined in the environment variables.');
+  process.exit(1);
+}
 
 const PORT = 3000;
 const isTestMode = process.env.NODE_ENV === 'test'; // Check if the application is running in test mode
@@ -17,10 +30,7 @@ function createServer() {
   const app = express();
 
   // MongoDB connection
-  mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  mongoose.connect(process.env.MONGO_URI, {})
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB connection error:', err));
 
@@ -58,6 +68,7 @@ function createServer() {
   app.use('/api/users', userRoutes);
   app.use('/api/blog', blogRoutes);
   app.use('/api/marketplace', marketplaceRoutes);
+  app.use('/api/product-tracker', productTrackerRoutes); // Register product tracker routes
 
   // Serve static files from the frontend directory
   app.use(express.static(path.join(__dirname, '../frontend')));

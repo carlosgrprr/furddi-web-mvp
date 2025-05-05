@@ -2,19 +2,17 @@ const request = require('supertest');
 const createServer = require('../server');
 const mongoose = require('mongoose');
 const Blog = require('../models/Blog');
+const { connectToDatabase, closeDatabaseConnection } = require('../utils/mongoConnection');
 
 const app = createServer();
 
 describe('Blog Routes', () => {
   beforeAll(async () => {
-    await mongoose.connect('mongodb://localhost:27017/fruddi_test', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await connectToDatabase();
   });
 
   afterAll(async () => {
-    await mongoose.connection.close();
+    await closeDatabaseConnection();
   });
 
   it('should fetch all blogs', async () => {
@@ -27,6 +25,6 @@ describe('Blog Routes', () => {
     const newBlog = { title: 'Test Blog', content: 'Test Content', category: 'Test' };
     const response = await request(app).post('/api/blog').send(newBlog);
     expect(response.status).toBe(201);
-    expect(response.text).toBe('Blog article created successfully');
+    expect(response.body.message).toBe('Blog article created successfully');
   });
 });

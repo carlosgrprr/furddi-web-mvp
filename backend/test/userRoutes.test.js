@@ -2,6 +2,7 @@ const request = require('supertest');
 const createServer = require('../server'); // Import a function to create the app instance
 const mongoose = require('mongoose');
 const User = require('../models/User');
+const { closeDatabaseConnection } = require('../utils/mongoConnection'); // Import closeDatabaseConnection
 
 jest.mock('nodemailer', () => ({
   createTransport: jest.fn().mockReturnValue({
@@ -10,15 +11,18 @@ jest.mock('nodemailer', () => ({
 }));
 
 let server;
+let connection; // Ensure mongoose connection is reused
 
 jest.setTimeout(20000); // Increase timeout to 20 seconds
 
 beforeAll(async () => {
+  if (!connection) {
+    connection = await mongoose.connect('mongodb://localhost:27017/testdb', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+  }
   process.env.TEST_MODE = 'true'; // Explicitly set test mode
-  await mongoose.disconnect(); // Ensure no active connections
-  await mongoose.connect('mongodb://localhost:27017/fruddi_test', {
-    serverSelectionTimeoutMS: 10000, // Add timeout for MongoDB connection
-  });
   const appInstance = createServer(); // Create a new app instance for testing
   server = appInstance.listen(4000); // Start the server on a different port for testing
 });
@@ -38,18 +42,23 @@ afterEach(async () => {
 });
 
 afterAll(async () => {
-  if (mongoose.connection.readyState === 1) { // Check if connection is established
-    await mongoose.connection.db.dropDatabase();
-    await mongoose.connection.close();
+  if (connection) {
+    await mongoose.connection.close(); // Close MongoDB connection
   }
-  server.close(); // Close the server after tests
+  server.close(); // Close the server
+
+  // Clear any active timers
+  jest.clearAllTimers();
+
+  await closeDatabaseConnection(); // Ensure proper cleanup of MongoDB connection
 });
 
 describe('User Authentication Routes', () => {
   it('should register a new user', async () => {
+    const uniqueEmail = `testuser_${Date.now()}@example.com`; // Generate a unique email
     const res = await request(server).post('/api/users/register').send({
       name: 'Test User',
-      email: 'testuser@example.com',
+      email: uniqueEmail,
       password: 'password123',
     });
     console.log('Full response object:', res); // Debug log

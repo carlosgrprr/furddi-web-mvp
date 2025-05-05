@@ -4,7 +4,9 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
-const { isTestMode } = require('../server'); // Import test mode flag
+
+// Use process.env.NODE_ENV directly to check for test mode
+const isTestMode = process.env.NODE_ENV === 'test';
 
 // Secret key for JWT
 const JWT_SECRET = 'your_jwt_secret_key';

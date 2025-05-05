@@ -6,6 +6,9 @@ const productSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   category: { type: String, required: true },
   stock: { type: Number, default: 0 },
+  origin: { type: String, required: true }, // Added required field
+  journey: { type: [String], default: [] },
+  authenticity: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
   reviews: [
