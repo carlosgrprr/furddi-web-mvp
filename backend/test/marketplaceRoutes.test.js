@@ -29,7 +29,8 @@ describe('Marketplace Routes', () => {
       stock: 10, 
       origin: 'Test Origin' // Added required field
     };
-    const response = await request(app).post('/api/marketplace').send(newProduct);
+    const token = 'mocked-jwt-token'; // Mock token
+    const response = await request(app).post('/api/marketplace/add-product').set('Authorization', `Bearer ${token}`).send(newProduct);
     expect(response.status).toBe(201);
     expect(response.body.message).toBe('Product added successfully'); // Adjusted to match JSON response format
   });

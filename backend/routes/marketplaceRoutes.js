@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product');
 const logger = require('../utils/logger'); // Import logger utility
+const { authenticateToken } = require('../utils/authMiddleware'); // Import middleware
 
 // Get all products with category and name filtering
 router.get('/', async (req, res) => {
@@ -20,14 +21,14 @@ router.get('/', async (req, res) => {
 });
 
 // Add a new product with price, category, stock, and origin
-router.post('/', async (req, res) => {
+router.post('/add-product', authenticateToken, async (req, res) => {
   try {
     const { name, description, price, category, stock, origin } = req.body; // Added 'origin' field
     const product = new Product({ name, description, price, category, stock, origin }); // Include 'origin' in product creation
     await product.save();
     res.status(201).json({ message: 'Product added successfully' });
   } catch (error) {
-    logger.error('Error adding product:', error);
+    logger.error('Error adding product:', error); // Log errors using logger utility
     res.status(400).json({ error: 'Failed to add product' });
   }
 });

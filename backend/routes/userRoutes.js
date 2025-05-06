@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt'); // Import bcrypt
 const nodemailer = require('nodemailer');
+const { body, validationResult } = require('express-validator'); // Import express-validator
 
 // Use process.env.NODE_ENV directly to check for test mode
 const isTestMode = process.env.NODE_ENV === 'test';
@@ -21,8 +22,42 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// Middleware to verify JWT tokens
+function authenticateToken(req, res, next) {
+  const token = req.header('Authorization')?.split(' ')[1]; // Extract token from Authorization header
+  if (!token) return res.status(401).json({ message: 'Access denied. No token provided.' });
+
+  try {
+    const verified = jwt.verify(token, JWT_SECRET);
+    req.user = verified; // Attach user info to request object
+    next();
+  } catch (error) {
+    res.status(403).json({ message: 'Invalid token.' });
+  }
+}
+
+// Validation and sanitization middleware for registration
+const validateRegistration = [
+  body('name').trim().notEmpty().withMessage('Name is required').escape(),
+  body('email').isEmail().withMessage('Invalid email address').normalizeEmail(),
+  body('password')
+    .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
+    .escape(),
+];
+
+// Validation and sanitization middleware for login
+const validateLogin = [
+  body('email').isEmail().withMessage('Invalid email address').normalizeEmail(),
+  body('password').notEmpty().withMessage('Password is required').escape(),
+];
+
 // User registration with email verification
-router.post('/register', async (req, res) => {
+router.post('/register', validateRegistration, async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   try {
     const { name, email, password, role } = req.body;
     console.log('Incoming registration request:', { name, email, role }); // Debug log
@@ -85,32 +120,51 @@ router.get('/verify', async (req, res) => {
   }
 });
 
+// Track failed login attempts
+let failedLoginAttempts = {}; // Store failed attempts by IP or user
+
 // User login
-router.post('/login', async (req, res) => {
+router.post('/login', validateLogin, async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   try {
     const { email, password } = req.body;
-    console.log('Attempting login with email:', email); // Debug log
-
     const user = await User.findOne({ email });
+
     if (!user) {
-      console.log('User not found for email:', email); // Debug log
-      return res.status(401).send('Invalid credentials');
+      const ip = req.ip;
+      failedLoginAttempts[ip] = (failedLoginAttempts[ip] || 0) + 1;
+
+      if (failedLoginAttempts[ip] > 3) {
+        logger.warn(`Suspicious activity detected: Multiple failed login attempts from IP ${ip}`);
+      }
+
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    console.log('Password validation result:', isPasswordValid); // Debug log
-
     if (!isPasswordValid) {
-      return res.status(401).send('Invalid credentials');
+      const ip = req.ip;
+      failedLoginAttempts[ip] = (failedLoginAttempts[ip] || 0) + 1;
+
+      if (failedLoginAttempts[ip] > 3) {
+        logger.warn(`Suspicious activity detected: Multiple failed login attempts from IP ${ip}`);
+      }
+
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
-    console.log('Login successful, generated token:', token); // Debug log
+    // Reset failed attempts on successful login
+    delete failedLoginAttempts[req.ip];
 
+    const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
     res.json({ message: 'Login successful', token });
   } catch (error) {
-    console.error('Error during login:', error); // Debug log
-    res.status(500).send(error.message);
+    logger.error('Error during login:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
@@ -168,6 +222,11 @@ router.post('/reset-password/:token', async (req, res) => {
   } catch (error) {
     res.status(500).send(error.message);
   }
+});
+
+// Example of a protected route
+router.get('/protected', authenticateToken, (req, res) => {
+  res.json({ message: 'This is a protected route.', user: req.user });
 });
 
 module.exports = router;

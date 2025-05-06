@@ -7,7 +7,7 @@ const userRoutes = require('./routes/userRoutes');
 const blogRoutes = require('./routes/blogRoutes');
 const marketplaceRoutes = require('./routes/marketplaceRoutes');
 const productTrackerRoutes = require('./routes/productTrackerRoutes'); // Import product tracker routes
-require('dotenv').config({ path: path.join(__dirname, '.env') }); // Explicitly specify the path to the .env file
+require('dotenv').config(); // Load environment variables
 
 console.log('Environment variables loaded:', process.env);
 
@@ -21,7 +21,7 @@ if (!process.env.JWT_SECRET) {
   process.exit(1);
 }
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const isTestMode = process.env.NODE_ENV === 'test'; // Check if the application is running in test mode
 console.log('Test mode:', isTestMode); // Debug log to verify test mode
 console.log('MONGO_URI:', process.env.MONGO_URI); // Debug log to verify MONGO_URI
@@ -30,7 +30,9 @@ function createServer() {
   const app = express();
 
   // MongoDB connection
-  mongoose.connect(process.env.MONGO_URI, {})
+  const MONGO_URI = process.env.MONGO_URI;
+
+  mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB connection error:', err));
 

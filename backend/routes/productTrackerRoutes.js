@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product');
+const { authenticateToken } = require('../utils/authMiddleware'); // Import middleware
+const logger = require('../utils/logger'); // Import logger utility
 
 // Create a new product tracking entry
 router.post('/', async (req, res) => {
@@ -30,6 +32,16 @@ router.get('/:productId', async (req, res) => {
     }); // Include productName in the response
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch product tracking details' });
+  }
+});
+
+// Protect sensitive routes
+router.get('/track/:id', authenticateToken, async (req, res) => {
+  try {
+    // ...existing code...
+  } catch (error) {
+    logger.error('Error tracking product:', error);
+    res.status(500).json({ error: 'Failed to track product' });
   }
 });
 

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Blog = require('../models/Blog');
 const logger = require('../utils/logger'); // Import logger utility
+const { authenticateToken } = require('../utils/authMiddleware'); // Import middleware
 
 // Get all blog articles with optional category filtering
 router.get('/', async (req, res) => {
@@ -16,8 +17,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Create a new blog article with category
-router.post('/', async (req, res) => {
+// Protect sensitive routes
+router.post('/create', authenticateToken, async (req, res) => {
   try {
     const { title, content, category } = req.body;
     const blog = new Blog({ title, content, category });

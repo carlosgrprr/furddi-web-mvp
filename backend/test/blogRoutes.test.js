@@ -23,7 +23,8 @@ describe('Blog Routes', () => {
 
   it('should create a new blog', async () => {
     const newBlog = { title: 'Test Blog', content: 'Test Content', category: 'Test' };
-    const response = await request(app).post('/api/blog').send(newBlog);
+    const token = 'mocked-jwt-token'; // Mock token
+    const response = await request(app).post('/api/blog/create').set('Authorization', `Bearer ${token}`).send(newBlog);
     expect(response.status).toBe(201);
     expect(response.body.message).toBe('Blog article created successfully');
   });
